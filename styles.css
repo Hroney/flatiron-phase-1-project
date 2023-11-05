@@ -1,0 +1,47 @@
+.searchbox {
+    border: 0px;
+    background-color: white;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+}
+
+.searchboxinput {
+    width: 90%;
+    height: 50px;
+    text-align: center;
+    font-size: 40px;
+}
+
+button {
+    width: auto;
+}
+
+button:hover {
+    background-color: black;
+}
+
+
+.gamefield {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.character-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+}
+
+.character-box {
+    border: 1px solid #000000;
+    color: red;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-size: 30px;
+}
