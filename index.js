@@ -22,4 +22,5 @@ function createDivs() {
         });
         characterContainer.appendChild(divBox);
     });
+    document.getElementById("userInput").value = "";
 }
