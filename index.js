@@ -10,10 +10,16 @@ userInput.addEventListener("keydown", function (event) {
 });
 
 class Word {
-    constructor(name, definitions, partOfSpeech) {
+    constructor(name) {
         this.name = name;
-        this.definitions = definitions;
-        this.partOfSpeech = partOfSpeech;
+        this.definitions = [];
+        this.nameArray = [];
+    }
+    addDefinition(definition, partOfSpeech) {
+        this.definitions.push({ definition, partOfSpeech })
+    }
+    splitTheWord() {
+        this.nameArray.push(this.name.split(''))
     }
 }
 
@@ -23,19 +29,34 @@ class Word {
 function isAWord(userInput) {
     let word = userInput.toLowerCase()
     const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
-    isASingleWord(userInput)
-    fetch(apiUrl)
-        .then(data => data.json())
-        .then(data => {
+    if (isASingleWord(userInput)) {
+        fetch(apiUrl)
+            .then(data => data.json())
+            .then(data => {
+                //This grabs each of the definition objects
+                console.log(data)
+                if (data.title === "No Definitions Found") {
+                    //This should create an empty object saying it isn't a word
+                    console.log("FAIL")
+                } else {
+                    const theWord = new Word(data[0].word)
+                    data[0].meanings.forEach(object => {
+                        object.definitions.forEach(definitionArray => {
+                            theWord.addDefinition(definitionArray.definition, object.partOfSpeech)
+                        })
+                        //This should populate an object with all of the data from that word.
 
-
-            //This grabs each of the definition objects
-            data[0].meanings.forEach(object => {
-                console.log(object)
+                        // console.log(object)
+                    })
+                    console.log(theWord)
+                }
             })
-        })
+    }
+    else {
+        const theWord = new Word('')
+        return theWord
+    }
 }
-
 
 
 
@@ -43,14 +64,15 @@ function isAWord(userInput) {
 function createDivs() {
     const userInput = document.getElementById("userInput").value.toUpperCase();
     const characterContainer = document.getElementById("characterContainer");
-    let characters = userInput.split('');
-    isAWord(userInput)
+    // let characters = userInput.split('');
+    const theWord = isAWord(userInput)
+    theWord.splitTheWord();
     //isASingleWord(characters, userInput)
 
     //This portion resets the onscreen div sections
     characterContainer.innerHTML = '';
 
-    characters.forEach(char => {
+    theWord.nameArray.forEach(char => {
         const divBox = document.createElement("div");
         divBox.classList.add("character-box");
         divBox.textContent = char;
@@ -66,21 +88,23 @@ function createDivs() {
 
 //This function checks the character array to see if it's a continuous string without spaces/punctuation
 function isASingleWord(userInput) {
-    //I looked up the regex for this portion, it should grab every punctuation marker.
-    let charArray = characters.split('')
+    //I looked up the regex for this portion, it should grab every punctuation marker and number.
+    let charArray = userInput.split('')
     const punctuation = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/;
     const numbers = /\d+/g;
+    let returnValue = true;
 
     //This is the Test to make sure the word is a single word and not a sentence.
     if (charArray.some(element => element.includes(' '))) {
         //alert(`The word/phrase ${userInput} is invalid; it has a space in it.`)
-        characters.length = 0
+        returnValue = false;
     }
     else if (charArray.some(element => punctuation.test(element))) {
         // alert(`The word/phrase ${userInput} is invalid; it has punctuation in it.`)
-        characters.length = 0
+        returnValue = false;
     } else if (charArray.some(element => numbers.test(element))) {
         //alert(`The word/phrase ${userInput} is invalid; it has a number in it.`)
-        characters.length = 0
+        returnValue = false;
     }
+    return returnValue
 }
