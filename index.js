@@ -9,6 +9,7 @@ userInput.addEventListener("keydown", function (event) {
     }
 });
 
+
 class Word {
     constructor(name) {
         this.name = name;
@@ -19,69 +20,67 @@ class Word {
         this.definitions.push({ definition, partOfSpeech })
     }
     splitTheWord() {
-        this.nameArray.push(this.name.split(''))
+        this.nameArray = this.name.toUpperCase().split('')
     }
 }
 
 
 
-
-function isAWord(userInput) {
+//This function creates the word object.
+async function isAWord(userInput) {
     let word = userInput.toLowerCase()
     const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
-    if (isASingleWord(userInput)) {
-        fetch(apiUrl)
-            .then(data => data.json())
-            .then(data => {
-                //This grabs each of the definition objects
-                console.log(data)
-                if (data.title === "No Definitions Found") {
-                    //This should create an empty object saying it isn't a word
-                    console.log("FAIL")
-                } else {
-                    const theWord = new Word(data[0].word)
-                    data[0].meanings.forEach(object => {
-                        object.definitions.forEach(definitionArray => {
-                            theWord.addDefinition(definitionArray.definition, object.partOfSpeech)
-                        })
-                        //This should populate an object with all of the data from that word.
 
-                        // console.log(object)
-                    })
-                    console.log(theWord)
-                }
-            })
-    }
-    else {
-        const theWord = new Word('')
-        return theWord
+    //Checks the word to make sure it's a single string word
+    if (isASingleWord(userInput)) {
+        try {
+            //Makes the API call
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            if (data.title === "No Definitions Found") {
+                // alert("That word is not in the API's dictionary")
+                return new Word('');
+            } else {
+                const theWord = new Word(data[0].word);
+                data[0].meanings.forEach(object => {
+                    object.definitions.forEach(definitionArray => {
+                        theWord.addDefinition(definitionArray.definition, object.partOfSpeech);
+                    });
+                });
+                theWord.splitTheWord();
+                return theWord;
+            }
+        } catch (error) {
+            console.error('Error fetching word data:', error);
+            return new Word('');
+        }
+    } else {
+        return new Word('');
     }
 }
 
 
 
 //This function creates the game pieces and gives them functionality
-function createDivs() {
-    const userInput = document.getElementById("userInput").value.toUpperCase();
+async function createDivs() {
+    const userInput = document.getElementById("userInput").value;
     const characterContainer = document.getElementById("characterContainer");
-    // let characters = userInput.split('');
-    const theWord = isAWord(userInput)
-    theWord.splitTheWord();
-    //isASingleWord(characters, userInput)
+
+    const theWord = await isAWord(userInput)
 
     //This portion resets the onscreen div sections
     characterContainer.innerHTML = '';
 
-    theWord.nameArray.forEach(char => {
+    theWord.nameArray.forEach((char, i) => {
         const divBox = document.createElement("div");
         divBox.classList.add("character-box");
         divBox.textContent = char;
         divBox.addEventListener("click", () => {
-            alert(`You clicked on character: ${char}`);
+            possibleWords(theWord, i)
+            // alert(`You clicked on character: ${char}`);
         });
         characterContainer.appendChild(divBox);
     });
-
     document.getElementById("userInput").value = "";
 }
 
@@ -107,4 +106,15 @@ function isASingleWord(userInput) {
         returnValue = false;
     }
     return returnValue
+}
+
+async function possibleWords(wordName, indexOfChosenLetter) {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    for (let i = 0; i < alphabet.length; i++) {
+        const letter = alphabet[i]
+        let copyOfNameArray = wordName.nameArray
+        copyOfNameArray[indexOfChosenLetter] = letter;
+        const wordToCheck = copyOfNameArray.join('')
+        console.log(await isAWord(wordToCheck))
+    }
 }
