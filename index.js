@@ -82,29 +82,8 @@ async function createDivs() {
             const promiseArray = arrayThing.map(item => isAWord(item))
 
             const wordObjects = await Promise.all(promiseArray)
-            wordObjects.forEach(word => {
+            createDefinitionDivs(wordObjects, choicesDiv)
 
-                // Create a new container div for each word object
-                const wordContainer = document.createElement("div");
-                wordContainer.classList.add("word-container");
-
-                // Create a new div for the word's name and populate it
-                const nameDiv = document.createElement("div");
-                nameDiv.classList.add("word-name");
-                nameDiv.textContent = `Word: ${word.name}`;
-                wordContainer.appendChild(nameDiv);
-
-                // Create divs for definitions and populates them
-                word.definitions.forEach((definition, index) => {
-                    const definitionDiv = document.createElement("div");
-                    definitionDiv.classList.add("word-definition");
-                    definitionDiv.textContent = `Definition ${index + 1}: ${definition.definition} (Part of Speech: ${definition.partOfSpeech})`;
-                    wordContainer.appendChild(definitionDiv);
-                });
-
-                // Append the wordcontainer to the "choices" div
-                choicesDiv.appendChild(wordContainer);
-            })
         });
         characterContainer.appendChild(divBox);
     });
@@ -122,14 +101,11 @@ function isASingleWord(userInput) {
 
     //This is the Test to make sure the word is a single word and not a sentence.
     if (charArray.some(element => element.includes(' '))) {
-        //alert(`The word/phrase ${userInput} is invalid; it has a space in it.`)
         returnValue = false;
     }
     else if (charArray.some(element => punctuation.test(element))) {
-        // alert(`The word/phrase ${userInput} is invalid; it has punctuation in it.`)
         returnValue = false;
     } else if (charArray.some(element => numbers.test(element))) {
-        //alert(`The word/phrase ${userInput} is invalid; it has a number in it.`)
         returnValue = false;
     }
     return returnValue
@@ -137,7 +113,7 @@ function isASingleWord(userInput) {
 
 function possibleWords(wordName, indexOfChosenLetter) {
 
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Assuming lowercase alphabet
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const modifiedObjects = [];
 
     for (let i = 0; i < alphabet.length; i++) {
@@ -148,4 +124,35 @@ function possibleWords(wordName, indexOfChosenLetter) {
     }
 
     return modifiedObjects;
+}
+
+
+//this function creates the divs for definitions and the words
+function createDefinitionDivs(objectArray, choicesDiv) {
+    objectArray.forEach(word => {
+        if (word.name === '') {
+            //do nothing
+        } else {
+            //This creates a container for each word
+            const wordContainer = document.createElement("div");
+            wordContainer.classList.add("word-container");
+
+            //This populates the container
+            const nameDiv = document.createElement("div");
+            nameDiv.classList.add("word-name");
+            nameDiv.textContent = `Word: ${word.name}`;
+            wordContainer.appendChild(nameDiv);
+
+            //this creates divs for the definitions and populates them
+            word.definitions.forEach((definition, index) => {
+                const definitionDiv = document.createElement("div");
+                definitionDiv.classList.add("word-definition");
+                definitionDiv.textContent = `Definition ${index + 1}: ${definition.definition} (Part of Speech: ${definition.partOfSpeech})`;
+                wordContainer.appendChild(definitionDiv);
+            });
+
+            // Appends the wordcontainer to the "choices" div
+            choicesDiv.appendChild(wordContainer);
+        }
+    })
 }
