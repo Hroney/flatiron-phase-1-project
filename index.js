@@ -30,7 +30,6 @@ class Word {
 async function isAWord(userInput) {
     let word = userInput.toLowerCase()
     const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
-
     //Checks the word to make sure it's a single string word
     if (isASingleWord(userInput)) {
         try {
@@ -65,19 +64,47 @@ async function isAWord(userInput) {
 async function createDivs() {
     const userInput = document.getElementById("userInput").value;
     const characterContainer = document.getElementById("characterContainer");
+    const choicesDiv = document.querySelector(".choices");
 
     const theWord = await isAWord(userInput)
 
     //This portion resets the onscreen div sections
     characterContainer.innerHTML = '';
+    choicesDiv.innerHTML = '';
 
     theWord.nameArray.forEach((char, i) => {
         const divBox = document.createElement("div");
         divBox.classList.add("character-box");
         divBox.textContent = char;
-        divBox.addEventListener("click", () => {
-            possibleWords(theWord, i)
-            // alert(`You clicked on character: ${char}`);
+        divBox.addEventListener("click", async () => {
+            choicesDiv.innerHTML = '';
+            let arrayThing = possibleWords(theWord, i)
+            const promiseArray = arrayThing.map(item => isAWord(item))
+
+            const wordObjects = await Promise.all(promiseArray)
+            wordObjects.forEach(word => {
+
+                // Create a new container div for each word object
+                const wordContainer = document.createElement("div");
+                wordContainer.classList.add("word-container");
+
+                // Create a new div for the word's name and populate it
+                const nameDiv = document.createElement("div");
+                nameDiv.classList.add("word-name");
+                nameDiv.textContent = `Word: ${word.name}`;
+                wordContainer.appendChild(nameDiv);
+
+                // Create divs for definitions and populates them
+                word.definitions.forEach((definition, index) => {
+                    const definitionDiv = document.createElement("div");
+                    definitionDiv.classList.add("word-definition");
+                    definitionDiv.textContent = `Definition ${index + 1}: ${definition.definition} (Part of Speech: ${definition.partOfSpeech})`;
+                    wordContainer.appendChild(definitionDiv);
+                });
+
+                // Append the wordcontainer to the "choices" div
+                choicesDiv.appendChild(wordContainer);
+            })
         });
         characterContainer.appendChild(divBox);
     });
@@ -108,13 +135,17 @@ function isASingleWord(userInput) {
     return returnValue
 }
 
-async function possibleWords(wordName, indexOfChosenLetter) {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function possibleWords(wordName, indexOfChosenLetter) {
+
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Assuming lowercase alphabet
+    const modifiedObjects = [];
+
     for (let i = 0; i < alphabet.length; i++) {
-        const letter = alphabet[i]
-        let copyOfNameArray = wordName.nameArray
-        copyOfNameArray[indexOfChosenLetter] = letter;
-        const wordToCheck = copyOfNameArray.join('')
-        console.log(await isAWord(wordToCheck))
+        const letter = alphabet[i];
+        const newName = wordName.nameArray.slice();
+        newName[indexOfChosenLetter] = letter;
+        modifiedObjects.push(newName.join(''));
     }
+
+    return modifiedObjects;
 }
