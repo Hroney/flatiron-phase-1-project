@@ -40,6 +40,9 @@ async function isAWord(userInput) {
         try {
             //Makes the API call
             const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP Error! Status is: ${response.status}`)
+            }
             const data = await response.json();
             if (data.title === "No Definitions Found") {
                 // alert("That word is not in the API's dictionary")
