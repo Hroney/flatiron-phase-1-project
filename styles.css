@@ -23,6 +23,7 @@ button {
     width: 80%;
     height: 56px;
     border: none;
+    cursor: pointer;
 }
 
 button:hover {
@@ -66,16 +67,6 @@ button:hover {
     margin-right: 5%;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
 .word-container {
     border: none;
     margin: 10px;
@@ -115,6 +106,44 @@ button:hover {
     text-align: left;
     margin: 1px;
     max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.rules {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.game-description {
+    display: block;
+}
+
+.game-description#title {
+    font-size: x-large;
+}
+
+#title:hover + #game-decriptor {
+    max-height: 150px;
+    overflow: hidden;
+    opacity: 1;
+    visibility: visible;
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.game-description#game-decriptor {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    margin-top: 10px;
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.game-description:hover {
+    max-height: 200px;
     overflow: hidden;
     transition: max-height 0.3s ease;
 }
