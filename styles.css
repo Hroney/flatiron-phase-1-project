@@ -66,6 +66,16 @@ button:hover {
     margin-right: 5%;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 .word-container {
     border: none;
     margin: 10px;
@@ -79,6 +89,7 @@ button:hover {
     background-color: rgb(238, 238, 238);
     color: black;
     overflow: hidden;
+    animation: fadeIn 1s;
     transition: background-color 0.3s ease, color 0.3s ease, height 0.3s ease, max-height 0.3s ease;
 }
 

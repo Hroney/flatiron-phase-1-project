@@ -164,6 +164,17 @@ function createDefinitionDivs(objectArray, choicesDiv) {
                 definitionDiv.textContent = `Definition ${index + 1}: ${definition.definition} (Part of Speech: ${definition.partOfSpeech})`;
                 wordContainer.appendChild(definitionDiv);
 
+                // Add mouseover event to focus on the definition
+                wordContainer.addEventListener("mouseenter", function () {
+                    wordContainer.focus();
+                    handleMouseOver(wordContainer);
+                });
+
+                // Add blur event to unfocus when the mouse leaves
+                wordContainer.addEventListener("mouseleave", function () {
+                    wordContainer.blur();
+                    handleMouseOut();
+                });
                 wordContainer.addEventListener("click", function () {
                     replaceWord(word);
                 });
@@ -180,4 +191,23 @@ function createDefinitionDivs(objectArray, choicesDiv) {
 function replaceWord(newWord) {
     theWord = newWord;
     workingWord()
+}
+
+// handles the mouseover event
+function handleMouseOver(container) {
+    // Reset blur on all word containers
+    document.querySelectorAll('.word-container').forEach(c => {
+        c.style.filter = 'blur(1px)';
+    });
+
+    // Remove blur effect from the hovered container
+    container.style.filter = 'blur(0)';
+}
+
+// handles the mouseout event
+function handleMouseOut() {
+    // Reset blur on all word containers
+    document.querySelectorAll('.word-container').forEach(container => {
+        container.style.filter = 'blur(0)';
+    });
 }
