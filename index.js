@@ -1,8 +1,7 @@
-//This section adds an event listener (click) to the button "createButton"
+// Adds an event listener (click) to the button "createButton"
 document.getElementById("createButton").addEventListener("click", createDivs);
 
-
-//This section adds an event listener (keydown) to the action of pressing the "Enter key"
+// Adds an event listener (keydown) to the action of pressing the "Enter key"
 let userInput = document.getElementById("userInput");
 userInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
@@ -10,42 +9,49 @@ userInput.addEventListener("keydown", function (event) {
     }
 });
 
+// Global map to store pulled words
 const mapOfPulledWords = new Map();
 
+// Word class definition
 class Word {
     constructor(name) {
         this.name = name;
         this.definitions = [];
         this.nameArray = [];
     }
+
+    // Adds a definition to the word
     addDefinition(definition, partOfSpeech) {
         this.definitions.push({ definition, partOfSpeech })
     }
+
+    // Splits the word into an array of characters
     splitTheWord() {
-        this.nameArray = this.name.toUpperCase().split('')
+        this.nameArray = this.name.toUpperCase().split('');
     }
 }
 
-//pulled out theWord from all code and made it global
+// Global variable to store the current word
 let theWord = new Word('');
 
-
-
-//This function creates the word object.
+// Function to create the word object
 async function isAWord(userInput) {
     let word = userInput.toLowerCase()
     const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
-    //Checks the word to make sure it's a single string word
+
+    // Checks if the input is a single string word
     if (isASingleWord(userInput)) {
         try {
-            //Makes the API call
+            // Makes the API call
             const response = await fetch(apiUrl);
+
             if (!response.ok) {
-                throw new Error(`HTTP Error! Status is: ${response.status}`)
+                throw new Error(`HTTP Error! Status is: ${response.status}`);
             }
+
             const data = await response.json();
+
             if (data.title === "No Definitions Found") {
-                // alert("That word is not in the API's dictionary")
                 return new Word('');
             } else {
                 theWord = new Word(data[0].word);
@@ -66,66 +72,70 @@ async function isAWord(userInput) {
     }
 }
 
+// Function to create game pieces and give them functionality
 async function workingWord() {
     const characterContainer = document.getElementById("characterContainer");
     const choicesDiv = document.querySelector(".choices");
 
-    //This portion resets the onscreen div sections
+    // Resets on-screen div sections
     characterContainer.innerHTML = '';
     choicesDiv.innerHTML = '';
 
-    //copies theWord so as to not affect searches in succession
+    // Copies theWord to avoid affecting successive searches
     let aWord = theWord;
+
+    // Creates character boxes
     aWord.nameArray.forEach((char, i) => {
         const divBox = document.createElement("div");
         divBox.classList.add("character-box");
         divBox.textContent = char;
         divBox.addEventListener("click", async () => {
             choicesDiv.innerHTML = '';
-            let arrayThing = possibleWords(aWord, i)
-            const promiseArray = arrayThing.map(item => isAWord(item))
-
-            const wordObjects = await Promise.all(promiseArray)
-            createDefinitionDivs(wordObjects, choicesDiv)
-
+            let arrayThing = possibleWords(aWord, i);
+            const promiseArray = arrayThing.map(item => isAWord(item));
+            const wordObjects = await Promise.all(promiseArray);
+            createDefinitionDivs(wordObjects, choicesDiv);
         });
         characterContainer.appendChild(divBox);
     });
 }
 
-//This function creates the game pieces and gives them functionality
+// Function to create divs for definitions and words
 async function createDivs() {
     const userInput = document.getElementById("userInput").value;
-    //checks the initial word input
-    theWord = await isAWord(userInput)
-    //appends the word to the page
-    await workingWord()
+
+    // Checks the initial word input
+    theWord = await isAWord(userInput);
+
+    // Appends the word to the page
+    await workingWord();
     document.getElementById("userInput").value = "";
 }
 
-
-//This function checks the character array to see if it's a continuous string without spaces/punctuation
+// Function to check if the character array represents a single word
 function isASingleWord(userInput) {
-    //I looked up the regex for this portion, it should grab every punctuation marker and number.
-    let charArray = userInput.split('')
+    let charArray = userInput.split('');
     const punctuation = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/;
     const numbers = /\d+/g;
     let returnValue = true;
 
-    //This is the Test to make sure the word is a single word and not a sentence.
+    // Tests if the word is a single word and not a sentence
     if (charArray.some(element => element.includes(' '))) {
         returnValue = false;
     }
+    // Tests if the word has punctuation
     else if (charArray.some(element => punctuation.test(element))) {
         returnValue = false;
-    } else if (charArray.some(element => numbers.test(element))) {
+    }
+    // Test is the word has a number
+    else if (charArray.some(element => numbers.test(element))) {
         returnValue = false;
     }
-    return returnValue
+    return returnValue;
 }
 
+// Function to generate possible words by modifying a chosen letter
 function possibleWords(wordName, indexOfChosenLetter) {
-
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const modifiedObjects = [];
 
@@ -139,25 +149,23 @@ function possibleWords(wordName, indexOfChosenLetter) {
     return modifiedObjects;
 }
 
-
-//this function creates the divs for definitions and the words
+// Function to create divs for definitions and words
 function createDefinitionDivs(objectArray, choicesDiv) {
     objectArray.forEach(word => {
-
         if (word.name === '') {
-            //do nothing
+            // Do nothing
         } else {
-            //This creates a container for each word
+            // Creates a container for each word
             const wordContainer = document.createElement("div");
             wordContainer.classList.add("word-container");
 
-            //This populates the container
+            // Populates the container
             const nameDiv = document.createElement("div");
             nameDiv.classList.add("word-name");
             nameDiv.textContent = `${word.name.toUpperCase()}`;
             wordContainer.appendChild(nameDiv);
 
-            //this creates divs for the definitions and populates them
+            // Creates divs for the definitions and populates them
             word.definitions.forEach((definition, index) => {
                 const definitionDiv = document.createElement("div");
                 definitionDiv.classList.add("word-definition");
@@ -175,25 +183,26 @@ function createDefinitionDivs(objectArray, choicesDiv) {
                     wordContainer.blur();
                     handleMouseOut();
                 });
+
+                // Add click event to replace the word when the definition is clicked
                 wordContainer.addEventListener("click", function () {
                     replaceWord(word);
                 });
             });
 
-            // Appends the wordcontainer to the "choices" div
+            // Appends the word container to the "choices" div
             choicesDiv.appendChild(wordContainer);
         }
-    })
+    });
 }
 
-
-//replaces the Working word
+// Function to replace the working word
 function replaceWord(newWord) {
     theWord = newWord;
-    workingWord()
+    workingWord();
 }
 
-// handles the mouseover event
+// Function to handle mouseover event
 function handleMouseOver(container) {
     // Reset blur on all word containers
     document.querySelectorAll('.word-container').forEach(c => {
@@ -204,7 +213,7 @@ function handleMouseOver(container) {
     container.style.filter = 'blur(0)';
 }
 
-// handles the mouseout event
+// Function to handle mouseout event
 function handleMouseOut() {
     // Reset blur on all word containers
     document.querySelectorAll('.word-container').forEach(container => {
