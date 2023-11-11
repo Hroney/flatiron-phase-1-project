@@ -1,6 +1,7 @@
 //This section adds an event listener (click) to the button "createButton"
 document.getElementById("createButton").addEventListener("click", createDivs);
 
+
 //This section adds an event listener (keydown) to the action of pressing the "Enter key"
 let userInput = document.getElementById("userInput");
 userInput.addEventListener("keydown", function (event) {
@@ -9,6 +10,7 @@ userInput.addEventListener("keydown", function (event) {
     }
 });
 
+const mapOfPulledWords = new Map();
 
 class Word {
     constructor(name) {
@@ -23,6 +25,9 @@ class Word {
         this.nameArray = this.name.toUpperCase().split('')
     }
 }
+
+//pulled out theWord from all code and made it global
+let theWord = new Word('');
 
 
 
@@ -40,7 +45,7 @@ async function isAWord(userInput) {
                 // alert("That word is not in the API's dictionary")
                 return new Word('');
             } else {
-                const theWord = new Word(data[0].word);
+                theWord = new Word(data[0].word);
                 data[0].meanings.forEach(object => {
                     object.definitions.forEach(definitionArray => {
                         theWord.addDefinition(definitionArray.definition, object.partOfSpeech);
@@ -58,27 +63,23 @@ async function isAWord(userInput) {
     }
 }
 
-
-
-//This function creates the game pieces and gives them functionality
-async function createDivs() {
-    const userInput = document.getElementById("userInput").value;
+async function workingWord() {
     const characterContainer = document.getElementById("characterContainer");
     const choicesDiv = document.querySelector(".choices");
-
-    const theWord = await isAWord(userInput)
 
     //This portion resets the onscreen div sections
     characterContainer.innerHTML = '';
     choicesDiv.innerHTML = '';
 
-    theWord.nameArray.forEach((char, i) => {
+    //copies theWord so as to not affect searches in succession
+    let aWord = theWord;
+    aWord.nameArray.forEach((char, i) => {
         const divBox = document.createElement("div");
         divBox.classList.add("character-box");
         divBox.textContent = char;
         divBox.addEventListener("click", async () => {
             choicesDiv.innerHTML = '';
-            let arrayThing = possibleWords(theWord, i)
+            let arrayThing = possibleWords(aWord, i)
             const promiseArray = arrayThing.map(item => isAWord(item))
 
             const wordObjects = await Promise.all(promiseArray)
@@ -87,6 +88,15 @@ async function createDivs() {
         });
         characterContainer.appendChild(divBox);
     });
+}
+
+//This function creates the game pieces and gives them functionality
+async function createDivs() {
+    const userInput = document.getElementById("userInput").value;
+    //checks the initial word input
+    theWord = await isAWord(userInput)
+    //appends the word to the page
+    await workingWord()
     document.getElementById("userInput").value = "";
 }
 
@@ -130,6 +140,7 @@ function possibleWords(wordName, indexOfChosenLetter) {
 //this function creates the divs for definitions and the words
 function createDefinitionDivs(objectArray, choicesDiv) {
     objectArray.forEach(word => {
+
         if (word.name === '') {
             //do nothing
         } else {
@@ -140,7 +151,7 @@ function createDefinitionDivs(objectArray, choicesDiv) {
             //This populates the container
             const nameDiv = document.createElement("div");
             nameDiv.classList.add("word-name");
-            nameDiv.textContent = `Word: ${word.name}`;
+            nameDiv.textContent = `${word.name.toUpperCase()}`;
             wordContainer.appendChild(nameDiv);
 
             //this creates divs for the definitions and populates them
@@ -149,10 +160,21 @@ function createDefinitionDivs(objectArray, choicesDiv) {
                 definitionDiv.classList.add("word-definition");
                 definitionDiv.textContent = `Definition ${index + 1}: ${definition.definition} (Part of Speech: ${definition.partOfSpeech})`;
                 wordContainer.appendChild(definitionDiv);
+
+                wordContainer.addEventListener("click", function () {
+                    replaceWord(word);
+                });
             });
 
             // Appends the wordcontainer to the "choices" div
             choicesDiv.appendChild(wordContainer);
         }
     })
+}
+
+
+//replaces the Working word
+function replaceWord(newWord) {
+    theWord = newWord;
+    workingWord()
 }
