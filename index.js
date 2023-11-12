@@ -1,16 +1,33 @@
 // Adds an event listener (click) to the button "createButton"
-document.getElementById("createButton").addEventListener("click", createDivs);
+document.getElementById("createButton").addEventListener("click", async () => {
+    await loadDB();
+    await createDivs();
+});
 
 // Adds an event listener (keydown) to the action of pressing the "Enter key"
 let userInput = document.getElementById("userInput");
-userInput.addEventListener("keydown", function (event) {
+userInput.addEventListener("keydown", async function (event) {
     if (event.key === "Enter") {
-        createDivs();
+        await loadDB();
+        await createDivs();
     }
 });
 
-// Global map to store pulled words
-const mapOfPulledWords = new Map();
+let db;
+// Function to load the db.json file
+async function loadDB() {
+    try {
+        const response = await fetch('http://localhost:3000/words');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch db.json. Status: ${response.status}`);
+        }
+
+        db = await response.json();
+    } catch (error) {
+        console.error('Error loading db.json:', error);
+    }
+}
+
 
 // Word class definition
 class Word {
@@ -36,21 +53,27 @@ let theWord = new Word('');
 
 // Function to create the word object
 async function isAWord(userInput) {
-    let word = userInput.toLowerCase()
-    const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+    let word = userInput.toLowerCase();
 
-    // Checks if the input is a single string word
+    if (db && db.words && word in db.words) {
+        const dbWord = db.words[word];
+        theWord = new Word(dbWord.name);
+        dbWord.definitions.forEach(({ definition, partOfSpeech }) => {
+            theWord.addDefinition(definition, partOfSpeech);
+        });
+        theWord.splitTheWord();
+        return theWord;
+    }
+
+    const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
     if (isASingleWord(userInput)) {
         try {
-            // Makes the API call
             const response = await fetch(apiUrl);
-
             if (!response.ok) {
                 throw new Error(`HTTP Error! Status is: ${response.status}`);
             }
 
             const data = await response.json();
-
             if (data.title === "No Definitions Found") {
                 return new Word('');
             } else {
@@ -61,6 +84,7 @@ async function isAWord(userInput) {
                     });
                 });
                 theWord.splitTheWord();
+                addToDB(theWord);
                 return theWord;
             }
         } catch (error) {
@@ -71,6 +95,58 @@ async function isAWord(userInput) {
         return new Word('');
     }
 }
+
+// Function to add a word to the db.json file
+function addToDB(word) {
+    if (!db) {
+        db = { words: {} };
+    }
+
+    const wordData = {
+        name: word.name,
+        definitions: word.definitions.map(({ definition, partOfSpeech }) => ({ definition, partOfSpeech })),
+        nameArray: word.nameArray
+    };
+
+    console.log("Before adding to db:", db);
+
+    try {
+        if (!db.words) {
+            db.words = {};
+        }
+
+        db.words[word.name.toLowerCase()] = wordData;
+        console.log("After adding to db:", db);
+        if (db.words[word.name.toLowerCase()] === wordData) {
+            saveDBToServer(db);
+        } else {
+            console.error("Failed to add word to db:", word);
+        }
+    } catch (error) {
+        console.error("Error adding word to db:", error);
+    }
+}
+
+async function saveDBToServer(db) {
+    try {
+        const response = await fetch('http://localhost:3000/words', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(db.words),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to save data to json-server. Status: ${response.status}`);
+        }
+
+        console.log('Data saved successfully to json-server!');
+    } catch (error) {
+        console.error('Error saving data to json-server:', error);
+    }
+}
+
 
 // Function to create game pieces and give them functionality
 async function workingWord() {
@@ -220,3 +296,9 @@ function handleMouseOut() {
         container.style.filter = 'blur(0)';
     });
 }
+
+// Call the loadDB function when the script starts
+loadDB().then(() => {
+    // Now you can use the db variable globally
+    console.log(db);
+});
