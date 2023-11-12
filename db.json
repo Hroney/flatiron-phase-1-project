@@ -239,6 +239,310 @@
         "L",
         "Y"
       ]
+    },
+    "felly": {
+      "name": "felly",
+      "definitions": [
+        {
+          "definition": "The outer rim of a wheel, supported by the spokes.",
+          "partOfSpeech": "noun"
+        }
+      ],
+      "nameArray": [
+        "F",
+        "E",
+        "L",
+        "L",
+        "Y"
+      ]
+    },
+    "helly": {
+      "name": "helly",
+      "definitions": [
+        {
+          "definition": "Hellish, infernal.",
+          "partOfSpeech": "adjective"
+        }
+      ],
+      "nameArray": [
+        "H",
+        "E",
+        "L",
+        "L",
+        "Y"
+      ]
+    },
+    "telly": {
+      "name": "telly",
+      "definitions": [
+        {
+          "definition": "Television.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A television set.",
+          "partOfSpeech": "noun"
+        }
+      ],
+      "nameArray": [
+        "T",
+        "E",
+        "L",
+        "L",
+        "Y"
+      ]
+    },
+    "belly": {
+      "name": "belly",
+      "definitions": [
+        {
+          "definition": "The abdomen, especially a fat one.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "The stomach.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "The womb.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "The lower fuselage of an airplane.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "The part of anything which resembles the human belly in protuberance or in cavity; the innermost part.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "The hollow part of a curved or bent timber, the convex part of which is the back.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "To position one’s belly; to move on one’s belly.",
+          "partOfSpeech": "verb"
+        },
+        {
+          "definition": "To swell and become protuberant; to bulge or billow.",
+          "partOfSpeech": "verb"
+        },
+        {
+          "definition": "To cause to swell out; to fill.",
+          "partOfSpeech": "verb"
+        }
+      ],
+      "nameArray": [
+        "B",
+        "E",
+        "L",
+        "L",
+        "Y"
+      ]
+    },
+    "gelly": {
+      "name": "gelly",
+      "definitions": [
+        {
+          "definition": "An explosive mixture of nitroglycerine and nitrate absorbed onto a base of wood pulp.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A dessert made by boiling gelatine, sugar and some flavouring (often derived from fruit) and allowing it to set, known as \"jello\" in North America.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A clear or translucent fruit preserve, made from fruit juice and set using either naturally occurring, or added, pectin. Known as \"jam\" in Commonwealth English.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A savoury substance, derived from meat, that has the same texture as the dessert.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "Any substance or object having the consistency of jelly.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A jellyfish.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A pretty girl; a girlfriend.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A large backside, especially a woman's.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A jelly shoe.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "Blood.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A coconut with soft or gelatinous meat inside as well as the meat itself (which is of regular quality if the coconut is immature)",
+          "partOfSpeech": "noun"
+        }
+      ],
+      "nameArray": [
+        "G",
+        "E",
+        "L",
+        "L",
+        "Y"
+      ]
+    },
+    "jelly": {
+      "name": "jelly",
+      "definitions": [
+        {
+          "definition": "An explosive mixture of nitroglycerine and nitrate absorbed onto a base of wood pulp.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A dessert made by boiling gelatine, sugar and some flavouring (often derived from fruit) and allowing it to set, known as \"jello\" in North America.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A clear or translucent fruit preserve, made from fruit juice and set using either naturally occurring, or added, pectin. Known as \"jam\" in Commonwealth English.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A savoury substance, derived from meat, that has the same texture as the dessert.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "Any substance or object having the consistency of jelly.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A jellyfish.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A pretty girl; a girlfriend.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A large backside, especially a woman's.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A jelly shoe.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "Blood.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "To wiggle like jelly.",
+          "partOfSpeech": "verb"
+        },
+        {
+          "definition": "To make jelly.",
+          "partOfSpeech": "verb"
+        },
+        {
+          "definition": "A coconut with soft or gelatinous meat inside as well as the meat itself (which is of regular quality if the coconut is immature)",
+          "partOfSpeech": "noun"
+        }
+      ],
+      "nameArray": [
+        "J",
+        "E",
+        "L",
+        "L",
+        "Y"
+      ]
+    },
+    "nelly": {
+      "name": "nelly",
+      "definitions": [
+        {
+          "definition": "A person's life.",
+          "partOfSpeech": "noun"
+        }
+      ],
+      "nameArray": [
+        "N",
+        "E",
+        "L",
+        "L",
+        "Y"
+      ]
+    },
+    "welly": {
+      "name": "welly",
+      "definitions": [
+        {
+          "definition": "Wellington boot.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "Force on a pedal or increase to any fuel or power for an engine or motor.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "Force or effort.",
+          "partOfSpeech": "noun"
+        }
+      ],
+      "nameArray": [
+        "W",
+        "E",
+        "L",
+        "L",
+        "Y"
+      ]
+    },
+    "cully": {
+      "name": "cully",
+      "definitions": [
+        {
+          "definition": "A person who is easily tricked or imposed on; a dupe, a gullible person.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A companion.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "A male client of a prostitute; a john, a gonk.",
+          "partOfSpeech": "noun"
+        },
+        {
+          "definition": "To trick, to impose on, to dupe.",
+          "partOfSpeech": "verb"
+        }
+      ],
+      "nameArray": [
+        "C",
+        "U",
+        "L",
+        "L",
+        "Y"
+      ]
+    },
+    "belle": {
+      "name": "belle",
+      "definitions": [
+        {
+          "definition": "An attractive woman.",
+          "partOfSpeech": "noun"
+        }
+      ],
+      "nameArray": [
+        "B",
+        "E",
+        "L",
+        "L",
+        "E"
+      ]
     }
   }
 }

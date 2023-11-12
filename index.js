@@ -1,35 +1,24 @@
-// Adds an event listener (click) to the button "createButton"
-document.getElementById("createButton").addEventListener("click", async () => {
+//Creates global DOM elements
+const createButton = document.getElementById("createButton");
+const userInput = document.getElementById("userInput");
+const characterContainer = document.getElementById("characterContainer");
+const choicesDiv = document.querySelector(".choices");
+
+//Creates functionality of Button
+createButton.addEventListener("click", async () => {
     await loadDB();
     await createDivs();
 });
 
-// Adds an event listener (keydown) to the action of pressing the "Enter key"
-let userInput = document.getElementById("userInput");
-userInput.addEventListener("keydown", async function (event) {
+//Creates functionality for pressing Enter rather than the submit button
+userInput.addEventListener("keydown", async (event) => {
     if (event.key === "Enter") {
         await loadDB();
         await createDivs();
     }
 });
 
-let db;
-// Function to load the db.json file
-async function loadDB() {
-    try {
-        const response = await fetch('http://localhost:3000/words');
-        if (!response.ok) {
-            throw new Error(`Failed to fetch db.json. Status: ${response.status}`);
-        }
-
-        db = await response.json();
-    } catch (error) {
-        console.error('Error loading db.json:', error);
-    }
-}
-
-
-// Word class definition
+//The basic object and constructor of a given word
 class Word {
     constructor(name) {
         this.name = name;
@@ -37,25 +26,42 @@ class Word {
         this.nameArray = [];
     }
 
-    // Adds a definition to the word
     addDefinition(definition, partOfSpeech) {
-        this.definitions.push({ definition, partOfSpeech })
+        this.definitions.push({ definition, partOfSpeech });
     }
 
-    // Splits the word into an array of characters
     splitTheWord() {
         this.nameArray = this.name.toUpperCase().split('');
     }
 }
 
-// Global variable to store the current word
+//Global variables. db = the database, theWord = the global object of a given word
+let db;
 let theWord = new Word('');
 
-// Function to create the word object
+
+//Function attempts to load the localhost server, if it's not running, it throws an error
+async function loadDB() {
+    try {
+        const response = await fetch('http://localhost:3000/words');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch db.json. Status: ${response.status}`);
+        }
+        //this sets the global database to be the local server
+        db = await response.json();
+    } catch (error) {
+        console.error('Error loading db.json:', error);
+    }
+}
+
+
+//Function to check if userinput is a valid word and then populates the object
 async function isAWord(userInput) {
     let word = userInput.toLowerCase();
 
+    //checks if there is a database, if there is a set of words in the database, and then checks if the userinput is in that db list
     if (db && db.words && word in db.words) {
+        //if this passes, the word is within the database. This statement will populate the global word with the stored information
         const dbWord = db.words[word];
         theWord = new Word(dbWord.name);
         dbWord.definitions.forEach(({ definition, partOfSpeech }) => {
@@ -65,18 +71,22 @@ async function isAWord(userInput) {
         return theWord;
     }
 
+    //sets the api URL
     const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+    //checks to see if the word is a single non-puctuated, non-numbered, word and not a sentence
     if (isASingleWord(userInput)) {
         try {
             const response = await fetch(apiUrl);
             if (!response.ok) {
                 throw new Error(`HTTP Error! Status is: ${response.status}`);
             }
-
             const data = await response.json();
+            //checks if the word doesn't exist
             if (data.title === "No Definitions Found") {
                 return new Word('');
-            } else {
+            }
+            //populates the global word with the information from the api
+            else {
                 theWord = new Word(data[0].word);
                 data[0].meanings.forEach(object => {
                     object.definitions.forEach(definitionArray => {
@@ -84,6 +94,7 @@ async function isAWord(userInput) {
                     });
                 });
                 theWord.splitTheWord();
+                //adds the word object to the database to reduce total API calls in successive uses.
                 addToDB(theWord);
                 return theWord;
             }
@@ -96,27 +107,31 @@ async function isAWord(userInput) {
     }
 }
 
-// Function to add a word to the db.json file
+//function adds words to the database
 function addToDB(word) {
+    //if there is no database already set and initialized, this sets it
     if (!db) {
         db = { words: {} };
     }
-
+    //creates a copy of the specific word being passed into the function
     const wordData = {
         name: word.name,
         definitions: word.definitions.map(({ definition, partOfSpeech }) => ({ definition, partOfSpeech })),
         nameArray: word.nameArray
     };
-
+    //This is a check to make sure the database is being updated for my logs
     console.log("Before adding to db:", db);
 
+    //I was having trouble saving to the server due to async functions. This block helps with that. 
     try {
+        //checks if there is any data in the database word section
         if (!db.words) {
             db.words = {};
         }
-
+        //populates a place in the database with the key of (word.name) lowercased to keep it consistent 
         db.words[word.name.toLowerCase()] = wordData;
         console.log("After adding to db:", db);
+        //If it's now set and the key exists, calls the saveDBtoServer function to save it
         if (db.words[word.name.toLowerCase()] === wordData) {
             saveDBToServer(db);
         } else {
@@ -127,13 +142,18 @@ function addToDB(word) {
     }
 }
 
+//Function to save the database object to json-server
 async function saveDBToServer(db) {
     try {
+        // Uses fetch to make a POST request to the specified URL
         const response = await fetch('http://localhost:3000/words', {
+            // Specify the HTTP method as POST
             method: 'POST',
+            // Sets the content type of the request body to JSON
             headers: {
                 'Content-Type': 'application/json',
             },
+            // Convert the 'db.words' object to a JSON string and sets it as the request body
             body: JSON.stringify(db.words),
         });
 
@@ -150,10 +170,7 @@ async function saveDBToServer(db) {
 
 // Function to create game pieces and give them functionality
 async function workingWord() {
-    const characterContainer = document.getElementById("characterContainer");
-    const choicesDiv = document.querySelector(".choices");
-
-    // Resets on-screen div sections
+    //resets onscreen div elements
     characterContainer.innerHTML = '';
     choicesDiv.innerHTML = '';
 
@@ -198,13 +215,9 @@ function isASingleWord(userInput) {
     // Tests if the word is a single word and not a sentence
     if (charArray.some(element => element.includes(' '))) {
         returnValue = false;
-    }
-    // Tests if the word has punctuation
-    else if (charArray.some(element => punctuation.test(element))) {
+    } else if (charArray.some(element => punctuation.test(element))) {
         returnValue = false;
-    }
-    // Test is the word has a number
-    else if (charArray.some(element => numbers.test(element))) {
+    } else if (charArray.some(element => numbers.test(element))) {
         returnValue = false;
     }
     return returnValue;
