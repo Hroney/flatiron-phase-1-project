@@ -66,9 +66,9 @@ async function isAWord(userInput) {
     let word = userInput.toLowerCase();
 
     //checks if there is a database, if there is a set of words in the database, and then checks if the userinput is in that db list
-    if (db && db.words && word in db.words) {
+    if (db && word in db) {
         //if this passes, the word is within the database. This statement will populate the global word with the stored information
-        const dbWord = db.words[word];
+        const dbWord = db[word];
         theWord = new Word(dbWord.name);
         dbWord.definitions.forEach(({ definition, partOfSpeech }) => {
             theWord.addDefinition(definition, partOfSpeech);
