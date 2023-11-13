@@ -109,19 +109,12 @@ async function isAWord(userInput) {
 
 //function adds words to the database
 function addToDB(word) {
-    //if there is no database already set and initialized, this sets it
-    if (!db) {
-        db = { words: {} };
-    }
     //creates a copy of the specific word being passed into the function
     const wordData = {
         name: word.name,
         definitions: word.definitions.map(({ definition, partOfSpeech }) => ({ definition, partOfSpeech })),
         nameArray: word.nameArray
     };
-    //This is a check to make sure the database is being updated for my logs
-    console.log("Before adding to db:", db);
-
     //I was having trouble saving to the server due to async functions. This block helps with that. 
     try {
         //checks if there is any data in the database word section
@@ -129,10 +122,9 @@ function addToDB(word) {
             db.words = {};
         }
         //populates a place in the database with the key of (word.name) lowercased to keep it consistent 
-        db.words[word.name.toLowerCase()] = wordData;
-        console.log("After adding to db:", db);
+        db[`${word.name.toLowerCase()}`] = wordData;
         //If it's now set and the key exists, calls the saveDBtoServer function to save it
-        if (db.words[word.name.toLowerCase()] === wordData) {
+        if (db[`${word.name.toLowerCase()}`] === wordData) {
             saveDBToServer(db);
         } else {
             console.error("Failed to add word to db:", word);
@@ -154,7 +146,7 @@ async function saveDBToServer(db) {
                 'Content-Type': 'application/json',
             },
             // Convert the 'db.words' object to a JSON string and sets it as the request body
-            body: JSON.stringify(db.words),
+            body: JSON.stringify(db),
         });
 
         if (!response.ok) {
@@ -196,12 +188,12 @@ async function workingWord() {
 // Function to create divs for definitions and words
 async function createDivs() {
     const userInput = document.getElementById("userInput").value;
-
     // Checks the initial word input
     theWord = await isAWord(userInput);
 
     // Appends the word to the page
     await workingWord();
+
     document.getElementById("userInput").value = "";
 }
 
