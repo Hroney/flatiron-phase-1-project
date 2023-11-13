@@ -3,6 +3,12 @@ const createButton = document.getElementById("createButton");
 const userInput = document.getElementById("userInput");
 const characterContainer = document.getElementById("characterContainer");
 const choicesDiv = document.querySelector(".choices");
+const resetBtn = document.getElementById("reset");
+
+resetBtn.addEventListener("click", async () => {
+    db = {}
+    saveDBToServer(db)
+})
 
 //Creates functionality of Button
 createButton.addEventListener("click", async () => {
@@ -117,10 +123,6 @@ function addToDB(word) {
     };
     //I was having trouble saving to the server due to async functions. This block helps with that. 
     try {
-        //checks if there is any data in the database word section
-        if (!db.words) {
-            db.words = {};
-        }
         //populates a place in the database with the key of (word.name) lowercased to keep it consistent 
         db[`${word.name.toLowerCase()}`] = wordData;
         //If it's now set and the key exists, calls the saveDBtoServer function to save it

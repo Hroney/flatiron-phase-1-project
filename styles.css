@@ -147,3 +147,24 @@ button:hover {
     overflow: hidden;
     transition: max-height 0.3s ease;
 }
+
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+nav a {
+    color: rgb(36, 35, 35);
+    text-decoration: none;
+}
+
+nav a:hover {
+    font-weight: bold;
+    color: black;
+}
