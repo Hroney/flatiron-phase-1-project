@@ -31,21 +31,25 @@ $ explorer.exe index.html
 > Input a valid word into the empty text box.
 > - Valid words are single, non-punctuated, non-spaced, non-numbered words.
 > - An improperly formated word or undefined word will default to an empty text box.
-> 
+> ![](https://github.com/Hroney/flatiron-phase-1-project/blob/main/readmefiles/game%20start.gif)
 #### Game Play
-> Select a letter from the valid word 
-> 
-#### returns 'phenomenon'
-> foobar.singularize('phenomena')
+> Select a letter from the valid word
+> ![](https://github.com/Hroney/flatiron-phase-1-project/blob/main/readmefiles/game%20play.gif)
+>
+> Select the word you wish to make the current "playable" word
+> ![](https://github.com/Hroney/flatiron-phase-1-project/blob/main/readmefiles/game%20play%202.gif)
+>
+> Repeat to see how you can morph a word from one to another. (e.g. Hat -> Eat -> Ear)
+> ![](https://github.com/Hroney/flatiron-phase-1-project/blob/main/readmefiles/game%20play%203.gif)
+#### Features
+> A `Reset` button in the top left deletes all of the saved json data in the db.json file if you wish to (Who asked for this feature? Me! I was debugging and needed this)
+>
+> Hover over the center section to view the rules in a simple format
+> ![](https://github.com/Hroney/flatiron-phase-1-project/blob/main/readmefiles/Rules.gif)
 
 
-## Contributing
+## Acknowledgments
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+#### API used
+> https://dictionaryapi.dev/
 
-Please make sure to update tests as appropriate.
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
